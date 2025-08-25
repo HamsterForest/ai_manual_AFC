@@ -53,14 +53,22 @@ if password == correct_password:
     # Gemini API 구성 및 모델 초기화
     genai.configure(api_key=gemini_api_key)
     model = genai.GenerativeModel('gemini-1.5-pro-latest')
-
+        
     def get_answer_from_gemini(query, context):
         try:
+            # 프롬프트를 명확하게 재구성합니다.
             prompt = f"""
             당신은 AFC(Automatic Fare Collection) 설비 장애에 대한 정보를 제공하는 AI 어시스턴트입니다.
-            ... (생략) ...
-            제공된 정보: {context}
-            ...
+            아래 제공된 정보만을 바탕으로 사용자의 질문에 답변하세요.
+            만약 제공된 정보에 없는 내용이라면, "해당 정보는 저의 지식 베이스에 포함되어 있지 않습니다." 라고 답변하세요.
+
+            ---
+            제공된 정보:
+            {context}
+            ---
+
+            사용자 질문:
+            {query}
             """
             response = model.generate_content(prompt)
             return response.text
